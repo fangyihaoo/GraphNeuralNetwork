@@ -6,18 +6,16 @@ import torch_geometric.transforms as T
 
 def NewNegihbour(dat, C = 3):
     '''
-    Find the nearest neighbour according to the adjacency matrix
+    Find the nearest neighbour according to the adjacency matrix (no edge information)
 
     Input: Pytorch geometric data object,  C is constant. Default 3
 
-    Output: Edge index corresponding to the new adjacency matrix
-
     '''
     flag = False
-    if dat['edge_index']:
-        adj = to_dense_adj(dat['edge_index'])
-    elif dat['adj_t']:
-        adj = data['adj_t'].to_dense()
+    if 'edge_index' in dat.keys:
+        adj = to_dense_adj(dat['edge_index'])[0]
+    elif 'adj_t' in dat.keys:
+        adj = dat['adj_t'].to_dense()
         flag = True
     else:
         raise KeyError("Sorry, there is no edge information")
@@ -38,5 +36,5 @@ def NewNegihbour(dat, C = 3):
     else:
         dat['edge_index'] = dense_to_sparse(newadj)[0]
 
-    return dat
+    return None
 
