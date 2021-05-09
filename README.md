@@ -1,1 +1,1 @@
-# GraphNeuralNetwork
+# Graph Neural Network
