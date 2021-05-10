@@ -27,7 +27,6 @@ def NewNegihbour(dat, C = 3):
     qt = torch.quantile(D, torch.log(n)/(w*torch.sqrt(n))*C, dim=1, keepdim=True)
     newadj = (D < qt)*1
     newadj = (newadj + newadj.T)/2
-
     
     if flag:
         Trans = T.ToSparseTensor()
