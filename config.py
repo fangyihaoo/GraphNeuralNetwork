@@ -20,7 +20,7 @@ class DefaultConfig(object):
 
     layer = 5
 
-    regu = True
+    regu = False
     
     p = None # dropout rate
 
