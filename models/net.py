@@ -42,19 +42,30 @@ class CovNet(BasicModule):
         return x
 
 
-class SageNet(BasicModule):
-    '''
-    GraphSAGE Neural Network
-    '''
+# class SageNet(BasicModule):
+#     '''
+#     GraphSAGE Neural Network
+#     '''
 
-    def __init__(self,
-    
-    
-    
-    
-    
-    
-    ):
+#     def __init__(self,
+#         num_feature: int = 16,                # number of features
+#         hidden_channels: int = 16,            # number of hidden channel
+#         num_class: int = 7,                   # number of classes
+#         num_sage: int = 5,                    # number of sage layer
+#         act = nn.ReLU(),                      # activation function
+#         p: float = None,                      # dropout rate
+#         ):
+        
+#         self.num_sage = num_sage
+#         self.p = p
+#         self.act = act
+
+#         for i in range(self.num_sage):
+#             setattr(self,f'sage{i}', SAGEConv(num_feature, hidden_channels))        
+
+#         self.output = SAGEConv(num_feature, num_class)
+
+#     def forward(self, )
 
 
 
@@ -62,3 +73,5 @@ class SageNet(BasicModule):
 
 class AttNet(BasicModule):
     
+
+

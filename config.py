@@ -5,7 +5,7 @@ class DefaultConfig(object):
     default setting, can be changed via command line
     '''
 
-    model = 'Convol'
+    model = 'CovNet'
 
     # test_data_root = './data/exact_sol'
 
@@ -14,21 +14,15 @@ class DefaultConfig(object):
     
     method = 'adam'
 
-    max_epoch = 5000 # number of epoch
+    max_epoch = 2000 # number of epoch
 
     lr = 0.001 # initial learning rate
 
-    lr_decay = 0.95 # when val_loss increase, lr = lr*lr_decay
+    layer = 5
 
-    # weight_decay = 0 # initial peanality for the L2
-
-    momentum = 0.9 # Momentum for modified SGD
-
-    nesterov = True # Nesterov momentum for SGD
-
-    alpha = 0.99 # alpha for RMSProp
+    regu = True
     
-    p = 0.2 # dropout rate
+    p = None # dropout rate
 
 
     def _parse(self, kwargs):
