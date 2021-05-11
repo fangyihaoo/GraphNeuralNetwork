@@ -71,7 +71,7 @@ class CovNet(BasicModule):
 
 
 
-class AttNet(BasicModule):
+# class AttNet(BasicModule):
     
 
 
