@@ -1,0 +1,10 @@
+#!/bin/csh
+#$ -M zhu4@nd.edu     # Email address for job notification
+#$ -m abe               # Send mail when job begins, ends and aborts
+#$ -q gpu             
+#$ -l gpu_card=1
+#$ -N Conv       
+ 
+module load python
+
+python main.py train

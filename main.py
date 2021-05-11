@@ -11,8 +11,11 @@ from utils import Optim
 
 def train(**kwarg):
 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     dataset = Planetoid(root='./data/Planetoid', name='Cora', transform=NormalizeFeatures())
     data = dataset[0]
+    data.to(device)
     opt._parse(kwargs)
 
     model = getattr(models, opt.model)(
