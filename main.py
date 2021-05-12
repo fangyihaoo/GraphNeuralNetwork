@@ -9,7 +9,7 @@ from utils import Optim
 
 
 
-def train(**kwarg):
+def train(**kwargs):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -22,7 +22,7 @@ def train(**kwarg):
         num_feature = dataset.num_features, 
         hidden_channels = dataset.num_features, 
         num_class = dataset.num_classes,
-        num_cov = opt.layer
+        num_cov = opt.layer,
         p = opt.p
         )
 
@@ -33,8 +33,8 @@ def train(**kwarg):
     model.to(device)
     model.apply(weight_init)
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = Optim(model.parameters, opt)
-
+    opti = Optim(model.parameters(), opt)
+    optimizer = opti.optimizer
     best_val_acc = 0.
     test_acc = 0.
 
@@ -75,8 +75,11 @@ def test(model, data):
     for _, mask in data('train_mask', 'val_mask', 'test_mask'):
         correct = pred[mask] == data.y[mask]
         acc = float(correct.sum()) / float(mask.sum())
-        accs.append()
+        accs.append(acc)
     model.train()
     return accs
 
+if __name__=='__main__':
+    import fire
+    fire.Fire()
 

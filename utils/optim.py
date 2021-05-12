@@ -13,13 +13,13 @@ class Optim(object):
 
     def _makeOptimizer(self):
         if self.method == 'adagrad':
-            return optim.Adagrad(self.params, lr = self.lr)
+            self.optimizer =  optim.Adagrad(self.params, lr = self.lr)
 
         elif self.method == 'rmsprop':
-            return optim.RMSProp(self.params, lr = self.lr, alpha = 0.9)
+            self.optimizer = optim.RMSProp(self.params, lr = self.lr, alpha = 0.9)
 
         elif self.method == 'adam':
-            return optim.Adam(self.params, lr=self.lr)
+            self.optimizer = optim.Adam(self.params, lr=self.lr)
         
         # to use SGD, we need to modify the train part and dataset
         # elif self.method == 'sgd':

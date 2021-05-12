@@ -3,6 +3,7 @@ import torch.nn as nn
 from .basic_module import BasicModule
 from torch_geometric.nn import GCNConv, SAGEConv, GATConv
 from torch import Tensor
+from typing import Type
 
 
 class CovNet(BasicModule):
@@ -16,7 +17,7 @@ class CovNet(BasicModule):
         num_cov: int = 5,                 # number of convolution layer
         act = nn.ReLU(),                  # activation function
         p: float = None,                  # dropout rate     
-        ):
+    ):
         super(CovNet, self).__init__() 
 
         self.num_cov = num_cov
@@ -32,7 +33,7 @@ class CovNet(BasicModule):
         self.output = GCNConv(num_feature, num_class, cached=True)
 
     def forward(self, x: Tensor, edge_index) -> Tensor:     
-        for i in range(self.self.num_cov):
+        for i in range(self.num_cov):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
             if self.p:
