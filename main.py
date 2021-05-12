@@ -23,7 +23,7 @@ def train(**kwargs):
         hidden_channels = dataset.num_features, 
         num_class = dataset.num_classes,
         num_cov = opt.layer,
-        p = opt.p
+        p = opt.rate
         )
 
     if opt.load_model_path:
