@@ -22,7 +22,7 @@ class DefaultConfig(object):
 
     regu = False
     
-    p = None # dropout rate
+    rate = None # dropout rate
 
 
     def _parse(self, kwargs):
