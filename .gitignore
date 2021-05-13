@@ -1,7 +1,9 @@
 
 
 data/Planetoid/
-
+/*.o*
+/*.ipynb
+/*.vscode
 
 # General
 .DS_Store
