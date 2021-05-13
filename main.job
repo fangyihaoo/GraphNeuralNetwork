@@ -1,10 +1,10 @@
 #!/bin/csh
 #$ -M zhu4@nd.edu     # Email address for job notification
 #$ -m abe               # Send mail when job begins, ends and aborts
-#$ -q gpu             
+#$ -q gpu            
 #$ -l gpu_card=1
 #$ -N Conv       
  
 module load python cuda/10.2
 
-python main.py train
+python main.py train --layer=11 --data='CiteSeer' --regu=True --lamb=1e-6

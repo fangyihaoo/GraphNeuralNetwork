@@ -30,7 +30,7 @@ class CovNet(BasicModule):
         if self.p:
             self.drop = nn.Dropout(p = self.p)
 
-        self.output = GCNConv(num_feature, num_class, cached=True)
+        self.output = GCNConv(hidden_channels, num_class, cached=True)
 
     def forward(self, x: Tensor, edge_index) -> Tensor:     
         for i in range(self.num_cov):
@@ -75,4 +75,4 @@ class CovNet(BasicModule):
 # class AttNet(BasicModule):
     
 
-
+ 

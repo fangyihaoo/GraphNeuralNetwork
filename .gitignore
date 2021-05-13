@@ -4,6 +4,8 @@ data/Planetoid/
 /*.o*
 /*.ipynb
 /*.vscode
+/*.txt
+/*.job
 
 # General
 .DS_Store

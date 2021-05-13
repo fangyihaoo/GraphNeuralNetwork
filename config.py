@@ -7,6 +7,8 @@ class DefaultConfig(object):
 
     model = 'CovNet'
 
+    data = 'Cora'
+
     # test_data_root = './data/exact_sol'
 
     load_model_path = None
@@ -14,15 +16,17 @@ class DefaultConfig(object):
     
     method = 'adam'
 
-    max_epoch = 2000 # number of epoch
+    max_epoch = 300 # number of epoch
 
-    lr = 0.001 # initial learning rate
+    lr = 0.0005 # initial learning rate
 
     layer = 5
 
     regu = False
     
     rate = None # dropout rate
+
+    lamb = 0.0001
 
 
     def _parse(self, kwargs):
