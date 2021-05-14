@@ -7,18 +7,23 @@ class KFAC(Optimizer):
 
     def __init__(self, net, eps, sua=False, pi=False, update_freq=1,
                  alpha=1.0, constraint_norm=False):
-        """ K-FAC Preconditionner for Linear and Conv2d layers.
-        Computes the K-FAC of the second moment of the gradients.
+        """ K-FAC Preconditionner for Linear and Conv2d layers. Computes the K-FAC of the second moment of the gradients. 
         It works for Linear and Conv2d layers and silently skip other layers.
+        
         Args:
             net (torch.nn.Module): Network to precondition.
+
             eps (float): Tikhonov regularization parameter for the inverses.
+
             sua (bool): Applies SUA approximation.
+
             pi (bool): Computes pi correction for Tikhonov regularization.
+
             update_freq (int): Perform inverses every update_freq updates.
+
             alpha (float): Running average parameter (if == 1, no r. ave.).
-            constraint_norm (bool): Scale the gradients by the squared
-                fisher norm.
+
+            constraint_norm (bool): Scale the gradients by the squared fisher norm.
 
 
         Copy from https://github.com/russellizadi/ssp.git

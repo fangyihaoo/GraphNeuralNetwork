@@ -7,4 +7,4 @@
  
 module load python cuda/10.2
 
-python main.py train --layer=11 --data='CiteSeer' --regu=True --lamb=1e-6
+python mainPred.py train --layer=1 --lamb=1e-5

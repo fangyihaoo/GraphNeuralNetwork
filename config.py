@@ -22,11 +22,11 @@ class DefaultConfig(object):
 
     layer = 5
 
-    regu = False
-    
     rate = None # dropout rate
+    
+    lamb = None # lambda for regulation 
 
-    lamb = 0.0001
+    ite = 100  # number of iteration
 
 
     def _parse(self, kwargs):
