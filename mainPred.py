@@ -18,17 +18,10 @@ def train(**kwargs):
     data = dataset[0]
     data.to(device)
 
-
-
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-
-    seed_setup()
+    # seed_setup()
    
     criterion = torch.nn.CrossEntropyLoss()
-    opti = Optim(model.parameters(), opt)
-    optimizer = opti.optimizer
-    
+
 
     acc_meter = meter.AverageValueMeter()
 
@@ -41,6 +34,12 @@ def train(**kwargs):
         num_cov = opt.layer,
         p = opt.rate
         )
+        
+        if opt.load_model_path:
+            model.load(opt.load_model_path)
+
+        opti = Optim(model.parameters(), opt)
+        optimizer = opti.optimizer
 
         model.to(device)
         model.apply(weight_init)
@@ -73,7 +72,7 @@ def train(**kwargs):
 
         acc_meter.add(test_acc)
 
-    log = 'Mean: {:05f}, Std: {:.5f}'
+    log = 'Mean: {:.5f}, Std: {:.3f}'
     print(log.format(acc_meter.value()[0], acc_meter.value()[1]))
 
 
