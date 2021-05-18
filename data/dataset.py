@@ -4,8 +4,12 @@ from torch_geometric.datasets import Planetoid
 
 
 
-def MyPlanetoid(name, split="public", num_train_per_class=20,
-                num_val=500, num_test=1000, transform=None):
+def MyPlanetoid(name, 
+                split="public", 
+                num_train_per_class=20,
+                num_val=500, 
+                num_test=1000, 
+                transform=None):
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', name)
 
     '''
