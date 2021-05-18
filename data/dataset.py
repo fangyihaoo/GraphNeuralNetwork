@@ -37,3 +37,14 @@ def MyPlanetoid(name, split="public", num_train_per_class=20,
         dataset = Planetoid(path, name, split = split, num_train_per_class = num_train_per_class, num_val=num_val, num_test = num_test, transform = transform)
 
     return dataset
+
+
+if __name__ == '__main__':
+    lst_names = ['Cora', 'CiteSeer', 'PubMed']
+    for name in lst_names:
+        dataset = MyPlanetoid(name)
+        print(f"dataset: {name}")
+        print(f"num_nodes: {dataset[0]['x'].shape[0]}")
+        print(f"num_edges: {dataset[0]['edge_index'].shape[1]}")
+        print(f"num_classes: {dataset.num_classes}")
+        print(f"num_features: {dataset.num_node_features}")
