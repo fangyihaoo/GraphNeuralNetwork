@@ -9,8 +9,6 @@ class DefaultConfig(object):
 
     data = 'Cora'
 
-    # test_data_root = './data/exact_sol'
-
     load_model_path = None
     #'checkpoints/model.pth' # path for trained model
     
@@ -18,13 +16,15 @@ class DefaultConfig(object):
 
     split = 'public'
 
+    norm = 'row'
+
     num_hidden = 64
 
     max_epoch = 300 # number of epoch
 
     lr = 0.0005 # initial learning rate
 
-    layer = 5
+    layer = 2
 
     rate = None # dropout rate
     

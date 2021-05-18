@@ -3,3 +3,4 @@ from .neighbour import NewNegihbour
 from .para_init import weight_init
 from .optim import Optim
 from .psgd import KFAC
+from .regularizer import regularizer

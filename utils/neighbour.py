@@ -4,7 +4,7 @@ import torch_geometric.transforms as T
 
 
 
-def NewNegihbour(dat, C = 3):
+def NewNegihbour(dat, C = 3) -> None:
     '''
     Find the nearest neighbour according to the adjacency matrix (no edge information)
 

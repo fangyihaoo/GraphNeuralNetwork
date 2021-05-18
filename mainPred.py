@@ -7,7 +7,7 @@ from config import opt
 from utils import seed_setup
 from utils import weight_init
 from utils import Optim
-
+from utils import regularizer
 
 
 def train(**kwargs):
@@ -26,7 +26,7 @@ def train(**kwargs):
 
         model = getattr(models, opt.model)(
         num_feature = dataset.num_features, 
-        hidden_channels = dataset.num_features, 
+        hidden_channels = opt.num_hidden, 
         num_class = dataset.num_classes,
         num_cov = opt.layer,
         p = opt.rate
@@ -50,13 +50,15 @@ def train(**kwargs):
             loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
 
             if opt.lamb:
-                regularizer = torch.tensor(0.)
+                loss += regularizer(model, opt.norm)
 
-                for name, param in model.named_parameters():
-                    if 'weight' in name:
-                        regularizer = regularizer + torch.sum(torch.norm(param, dim=0))
+                # regularizer = torch.tensor(0.)
+
+                # for name, param in model.named_parameters():
+                #     if 'weight' in name:
+                #         regularizer = regularizer + torch.sum(torch.norm(param, dim=0))
                 
-                loss = loss + torch.tensor(opt.lamb)*regularizer
+                # loss = loss + torch.tensor(opt.lamb)*regularizer
 
             loss.backward()
             optimizer.step()
