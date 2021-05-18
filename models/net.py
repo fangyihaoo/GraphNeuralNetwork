@@ -12,9 +12,9 @@ class CovNet(BasicModule):
     '''
     def __init__(self,
         num_feature: int = 16,            # number of features
-        hidden_channels: int = 16,        # number of hidden channel
+        hidden_channels: int = 64,        # number of hidden channel
         num_class: int = 7,               # number of classes
-        num_cov: int = 5,                 # number of convolution layer
+        num_cov: int = 5,                 # number of convolution layer, at least 2
         act = nn.ReLU(),                  # activation function
         p: float = None,                  # dropout rate     
     ):
@@ -24,15 +24,18 @@ class CovNet(BasicModule):
         self.p = p
         self.act = act
 
-        for i in range(self.num_cov):
-            setattr(self,f'conv{i}', GCNConv(num_feature, hidden_channels, cached=True))        # because its the node classification, so cached = True
+        self.conv0 = GCNConv(num_feature, hidden_channels, cached=True)
+
+        for i in range(1, self.num_cov - 1):
+            setattr(self,f'conv{i}', GCNConv(hidden_channels, hidden_channels, cached=True))        # because its the node classification, so cached = True
 
         if self.p:
             self.drop = nn.Dropout(p = self.p)
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
-    def forward(self, x: Tensor, edge_index) -> Tensor:     
+    def forward(self, x: Tensor, edge_index) -> Tensor:  
+        
         for i in range(self.num_cov):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)

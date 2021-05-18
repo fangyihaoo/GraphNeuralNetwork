@@ -1,6 +1,8 @@
 
 
-data/Planetoid/
+/data/CiteSeer/
+/data/Cora/
+/data/PubMed/
 /*.o*
 /*.ipynb
 /*.vscode

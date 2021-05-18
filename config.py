@@ -16,6 +16,10 @@ class DefaultConfig(object):
     
     method = 'adam'
 
+    split = 'public'
+
+    num_hidden = 64
+
     max_epoch = 300 # number of epoch
 
     lr = 0.0005 # initial learning rate

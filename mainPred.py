@@ -1,5 +1,5 @@
 import torch
-from torch_geometric.datasets import Planetoid
+from data import MyPlanetoid
 from torch_geometric.transforms import NormalizeFeatures
 import torchnet.meter as meter
 import models
@@ -14,14 +14,11 @@ def train(**kwargs):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     opt._parse(kwargs)
-    dataset = Planetoid(root='./data/Planetoid', name=opt.data, transform=NormalizeFeatures())
+    dataset = MyPlanetoid(name=opt.data, split=opt.split, transform=NormalizeFeatures())
     data = dataset[0]
     data.to(device)
 
-    # seed_setup()
-   
     criterion = torch.nn.CrossEntropyLoss()
-
 
     acc_meter = meter.AverageValueMeter()
 
