@@ -22,6 +22,23 @@ class DefaultConfig(object):
 
     max_epoch = 500 # number of epoch
 
+
+    #===============================================
+    '''
+    Preconditioner
+    '''
+    eps = 0.01
+
+    update_freq = 50
+    
+    alpha = None
+
+    gamma = None
+
+    precond = False
+
+    #===============================================
+
     lr = 0.0005 # initial learning rate
 
     layer = 2

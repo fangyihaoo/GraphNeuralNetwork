@@ -8,7 +8,7 @@ from utils import seed_setup
 from utils import weight_init
 from utils import Optim
 from utils import regularizer
-
+from utils import KFAC
 
 def train(**kwargs):
 
@@ -52,15 +52,26 @@ def train(**kwargs):
             if opt.lamb:
                 loss +=  opt.lamb*regularizer(model, opt.norm)
 
-                # regularizer = torch.tensor(0.)
-                # for name, param in model.named_parameters():
-                #     if 'weight' in name:
-                #         regularizer = regularizer + torch.sum(torch.norm(param, dim=0))            
-                # loss = loss + torch.tensor(opt.lamb)*regularizer
-
             loss.backward()
-            optimizer.step()
+            
+            ## preconditioner
+            # if opt.precond:
+            #     preconditioner = KFAC(
+            #             model, 
+            #             opt.eps, 
+            #             sua=False, 
+            #             pi=False, 
+            #             update_freq = opt.update_freq,
+            #             alpha = opt.alpha if opt.alpha is not None else 1.,
+            #             constraint_norm = False
+            #         )
+            #     lam = (float(epoch)/float(epochs))**opt.gamma if opt.gamma is not None else 0.
+            #     label = label = out.max(1)[1]
+            #     label.requires_grad = False
+            #     loss += lam*criterion(out[~data.train_mask], label[~data.train_mask]) 
+            #     preconditioner.step(lam=lam)
 
+            optimizer.step()
             train_acc, val_acc, tmp_test_acc = test(model, data)
 
             if val_acc > best_val_acc:
