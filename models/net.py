@@ -36,7 +36,7 @@ class CovNet(BasicModule):
 
     def forward(self, x: Tensor, edge_index) -> Tensor:  
         
-        for i in range(self.num_cov):
+        for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
             if self.p:

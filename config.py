@@ -20,7 +20,7 @@ class DefaultConfig(object):
 
     num_hidden = 64
 
-    max_epoch = 300 # number of epoch
+    max_epoch = 500 # number of epoch
 
     lr = 0.0005 # initial learning rate
 
@@ -30,7 +30,7 @@ class DefaultConfig(object):
     
     lamb = None # lambda for regulation 
 
-    ite = 100  # number of iteration
+    ite = 10  # number of iteration
 
 
     def _parse(self, kwargs):

@@ -11,7 +11,7 @@ def regularizer(model, norm = 'row') -> Tensor:
         'l2': L2 norm of weight parameters
         'l1': L1 norm of weight parameters
     '''
-    loss = torch.tensor(0.)
+    loss = torch.tensor(0., device = next(model.parameters()).device)
 
     if norm == 'row':
         for name, param in model.named_parameters():
@@ -25,7 +25,7 @@ def regularizer(model, norm = 'row') -> Tensor:
         l1_penalty = torch.nn.L1Loss(size_average=False)
         for name, param in model.named_parameters():
             if 'weight' in name:
-                loss += l1_penalty(param)     
+                loss += torch.norm(param, p = 1)     
     else:
         raise ValueError('There is no such option for the required norm')
     

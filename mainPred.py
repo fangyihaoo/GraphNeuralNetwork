@@ -50,14 +50,12 @@ def train(**kwargs):
             loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
 
             if opt.lamb:
-                loss += regularizer(model, opt.norm)
+                loss +=  opt.lamb*regularizer(model, opt.norm)
 
                 # regularizer = torch.tensor(0.)
-
                 # for name, param in model.named_parameters():
                 #     if 'weight' in name:
-                #         regularizer = regularizer + torch.sum(torch.norm(param, dim=0))
-                
+                #         regularizer = regularizer + torch.sum(torch.norm(param, dim=0))            
                 # loss = loss + torch.tensor(opt.lamb)*regularizer
 
             loss.backward()
@@ -73,8 +71,6 @@ def train(**kwargs):
 
     log = 'Mean: {:.5f}, Std: {:.3f}'
     print(log.format(acc_meter.value()[0], acc_meter.value()[1]))
-
-
 
 
 @torch.no_grad()
