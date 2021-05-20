@@ -20,7 +20,7 @@ class DefaultConfig(object):
 
     num_hidden = 64
 
-    max_epoch = 500 # number of epoch
+    max_epoch = 2000 # number of epoch
 
 
     #===============================================
@@ -47,7 +47,7 @@ class DefaultConfig(object):
     
     lamb = None # lambda for regulation 
 
-    ite = 10  # number of iteration
+    ite = 20  # number of iteration
 
 
     def _parse(self, kwargs):

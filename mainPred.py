@@ -9,6 +9,7 @@ from utils import weight_init
 from utils import Optim
 from utils import regularizer
 from utils import KFAC
+from utils import NeighbourSmoothing
 
 def train(**kwargs):
 

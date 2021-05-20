@@ -58,7 +58,7 @@ def NeighbourSmoothing(dat):
     else:
         raise KeyError("Sorry, there is no edge information")
 
-    n = torch.tensor(adj.size()[0])
+    n = torch.tensor(adj.size()[0], device = adj.device)
     adj2 = adj @ adj.T*(1./n)
     D = torch.cdist(adj2, adj2, p = float('inf'))
     K = D < torch.quantile(D, torch.sqrt(torch.log(n)/n), dim=1, keepdim=True)

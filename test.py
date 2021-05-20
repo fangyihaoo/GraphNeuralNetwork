@@ -8,6 +8,7 @@ from utils import seed_setup
 from utils import weight_init
 from utils import Optim
 from utils import regularizer
+from utils import KFAC
 from utils import NeighbourSmoothing
 
 def train(**kwargs):
@@ -18,49 +19,82 @@ def train(**kwargs):
     data = dataset[0]
     data.to(device)
 
-    p = NeighbourSmoothing(data)
+    prop = NeighbourSmoothing(data)
 
-    model = getattr(models, opt.model)(
-        prob = p,
-        num_feature = dataset.num_features, 
-        hidden_channels = dataset.num_features, 
-        num_class = dataset.num_classes,
-        num_cov = opt.layer,
-        p = opt.rate
-        )
-
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-
-    # seed_setup()
-    model.to(device)
-    model.apply(weight_init)
     criterion = torch.nn.CrossEntropyLoss()
-    opti = Optim(model.parameters(), opt)
-    optimizer = opti.optimizer
-    best_val_acc = 0.
-    test_acc = 0.
 
-    for epoch in range(opt.max_epoch + 1):
-        model.train()
-        optimizer.zero_grad()  
-        out = model(data.x, data.edge_index)  
-        loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
+    acc_meter = meter.AverageValueMeter()
 
-        if opt.lamb:
-            loss +=  opt.lamb*regularizer(model, opt.norm)
+    for i in range(opt.ite + 1):
 
-        loss.backward()
-        optimizer.step()
-
-        train_acc, val_acc, tmp_test_acc = test(model, data)
-
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            test_acc = tmp_test_acc
+        if opt.model == 'CovNet':
+            model = getattr(models, opt.model)(
+            num_feature = dataset.num_features, 
+            hidden_channels = opt.num_hidden, 
+            num_class = dataset.num_classes,
+            num_cov = opt.layer,
+            p = opt.rate
+            )
+        else:
+            model = getattr(models, opt.model)(
+            prob = prop,
+            num_feature = dataset.num_features, 
+            hidden_channels = opt.num_hidden, 
+            num_class = dataset.num_classes,
+            num_cov = opt.layer,
+            p = opt.rate
+            )            
         
-        log = 'Epoch: {:04d}, Train: {:.5f}, Val: {:.5f}, Test: {:.5f}'
-        print(log.format(epoch, train_acc, best_val_acc, test_acc))
+        if opt.load_model_path:
+            model.load(opt.load_model_path)
+
+        opti = Optim(model.parameters(), opt)
+        optimizer = opti.optimizer
+
+        model.to(device)
+        model.apply(weight_init)
+        best_val_acc = 0.
+        test_acc = 0.
+
+        for epoch in range(opt.max_epoch + 1):
+            model.train()
+            optimizer.zero_grad()  
+            out = model(data.x, data.edge_index)  
+            loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
+
+            if opt.lamb:
+                loss +=  opt.lamb*regularizer(model, opt.norm)
+
+            loss.backward()
+            
+            ## preconditioner
+            # if opt.precond:
+            #     preconditioner = KFAC(
+            #             model, 
+            #             opt.eps, 
+            #             sua=False, 
+            #             pi=False, 
+            #             update_freq = opt.update_freq,
+            #             alpha = opt.alpha if opt.alpha is not None else 1.,
+            #             constraint_norm = False
+            #         )
+            #     lam = (float(epoch)/float(epochs))**opt.gamma if opt.gamma is not None else 0.
+            #     label = label = out.max(1)[1]
+            #     label.requires_grad = False
+            #     loss += lam*criterion(out[~data.train_mask], label[~data.train_mask]) 
+            #     preconditioner.step(lam=lam)
+
+            optimizer.step()
+            train_acc, val_acc, tmp_test_acc = test(model, data)
+
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+                test_acc = tmp_test_acc
+
+        acc_meter.add(test_acc)
+
+    log = 'Mean: {:.5f}, Std: {:.3f}'
+    print(log.format(acc_meter.value()[0], acc_meter.value()[1]))
 
 
 @torch.no_grad()

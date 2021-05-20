@@ -1,1 +1,1 @@
-from .net import CovNet
+from .net import CovNet, ResamplingNet
