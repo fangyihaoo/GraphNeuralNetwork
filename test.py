@@ -1,14 +1,14 @@
 import torch
-from torch_geometric.datasets import Planetoid
+from data import MyPlanetoid
 from torch_geometric.transforms import NormalizeFeatures
+import torchnet.meter as meter
 import models
 from config import opt
 from utils import seed_setup
 from utils import weight_init
 from utils import Optim
+from utils import regularizer
 from utils import NeighbourSmoothing
-
-
 
 def train(**kwargs):
 
@@ -18,7 +18,10 @@ def train(**kwargs):
     data = dataset[0]
     data.to(device)
 
+    p = NeighbourSmoothing(data)
+
     model = getattr(models, opt.model)(
+        prob = p,
         num_feature = dataset.num_features, 
         hidden_channels = dataset.num_features, 
         num_class = dataset.num_classes,
@@ -29,7 +32,7 @@ def train(**kwargs):
     if opt.load_model_path:
         model.load(opt.load_model_path)
 
-    seed_setup()
+    # seed_setup()
     model.to(device)
     model.apply(weight_init)
     criterion = torch.nn.CrossEntropyLoss()
@@ -44,14 +47,8 @@ def train(**kwargs):
         out = model(data.x, data.edge_index)  
         loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
 
-        if opt.regu:
-            regularizer = torch.tensor(0.)
-
-            for name, param in model.named_parameters():
-                if 'weight' in name:
-                    regularizer = regularizer + torch.sum(torch.norm(param, dim=0))
-            
-            loss = loss + torch.tensor(opt.lamb)*regularizer
+        if opt.lamb:
+            loss +=  opt.lamb*regularizer(model, opt.norm)
 
         loss.backward()
         optimizer.step()
