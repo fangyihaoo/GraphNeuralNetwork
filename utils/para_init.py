@@ -14,7 +14,7 @@ def weight_init(m):
     if isinstance(m, nn.Linear):
         init.xavier_normal_(m.weight.data, gain=1.0)
         if m.bias is not None:
-            torch.nn.init.zeros_(m.bias)
+            init.zeros_(m.bias)
 
     # if isinstance(m, nn.Conv1d):
     #     init.normal_(m.weight.data)

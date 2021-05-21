@@ -3,20 +3,21 @@ import os.path as osp
 from openpyxl import load_workbook
 
 
-def write_excel(dat, opt, filepath = 'result.xlsx') -> None:
+def write_excel(dat, opt, filepath) -> None:
 
     '''
     Save all the output from different schemes into one excel files with different sheets
     '''
+    filepath = filepath + 'output.xlsx'
     sheetname = f'{opt.data}|{opt.split}'
     layers = opt.layer
 
     if opt.lamb:
-        columnname = [f'{opt.norm} Sparsity {opt.lamb}']
+        columnname = [f'{opt.model} {opt.norm} Sparsity {opt.lamb}']
     elif opt.rate:
-        columnname = [f'Dropout Rate {opt.rate}']
+        columnname = [f'{opt.model} Dropout Rate {opt.rate}']
     else:
-        columnname = [f'None']
+        columnname = [f'{opt.model}']
 
     # Create a new excel file
     if not osp.exists(filepath): 

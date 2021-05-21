@@ -1,7 +1,8 @@
 import torch
+import os.path as osp
 from torch_geometric.utils import to_dense_adj, dense_to_sparse
 import torch_geometric.transforms as T
-
+from data import MyPlanetoid
 
 
 def NewNegihbour(dat) -> None:
@@ -85,3 +86,14 @@ def AdjacencySampling(P, sym = True):
     edge_index, _ = dense_to_sparse(adj.fill_diagonal_(0))
 
     return edge_index
+
+
+if __name__ == '__main__':
+    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result')
+    lst_names = ['Cora', 'CiteSeer', 'PubMed']
+    for name in lst_names:
+        filename = path + f'{name}LinkProp.pt'
+        dataset = MyPlanetoid(name)
+        data = dataset[0]
+        P = NeighbourSmoothing(data)
+        torch.save(P, filename)
