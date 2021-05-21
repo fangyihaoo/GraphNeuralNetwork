@@ -80,7 +80,7 @@ class ResamplingNet(BasicModule):
 
         self.prob = prob
 
-    def forward(self, x: Tensor, edge_index) -> Tensor:  
+    def forward(self, x: Tensor, edge_index: Tensor) -> Tensor:  
         
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
