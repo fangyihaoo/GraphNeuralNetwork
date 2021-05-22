@@ -18,7 +18,7 @@ class CovNet(BasicModule):
         num_cov: int = 5,                 # number of convolution layer, at least 2
         act = nn.ReLU(),                  # activation function
         dp: float = None,                  # dropout rate     
-    ):
+    ) -> None:
         super(CovNet, self).__init__() 
 
         self.num_cov = num_cov
@@ -35,7 +35,7 @@ class CovNet(BasicModule):
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
-    def forward(self, x: Tensor, edge_index) -> Tensor:  
+    def forward(self, x: Tensor, edge_index: Tensor) -> Tensor:  
         
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
@@ -54,14 +54,14 @@ class ResamplingNet(BasicModule):
     Each layer, the Laplacian matrix is resampling according to the graphon estimation
     '''
     def __init__(self,
-        prob,                             # link probability matrix, cached
+        prob: Tensor,                             # link probability matrix, cached
         num_feature: int = 16,            # number of features
         hidden_channels: int = 64,        # number of hidden channel
         num_class: int = 7,               # number of classes
         num_cov: int = 5,                 # number of convolution layer, at least 2
         act = nn.ReLU(),                  # activation function
         dp: float = None,                  # dropout rate
-    ):
+    ) -> None:
         super(ResamplingNet, self).__init__() 
 
         self.num_cov = num_cov
@@ -80,7 +80,7 @@ class ResamplingNet(BasicModule):
 
         self.prob = prob
 
-    def forward(self, x: Tensor, edge_index) -> Tensor:  
+    def forward(self, x: Tensor, edge_index: Tensor) -> Tensor:  
         
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
