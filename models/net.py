@@ -17,12 +17,12 @@ class CovNet(BasicModule):
         num_class: int = 7,               # number of classes
         num_cov: int = 5,                 # number of convolution layer, at least 2
         act = nn.ReLU(),                  # activation function
-        p: float = None,                  # dropout rate     
+        dp: float = None,                  # dropout rate     
     ):
         super(CovNet, self).__init__() 
 
         self.num_cov = num_cov
-        self.p = p
+        self.dp = dp
         self.act = act
 
         self.conv0 = GCNConv(num_feature, hidden_channels, cached=True)
@@ -30,8 +30,8 @@ class CovNet(BasicModule):
         for i in range(1, self.num_cov - 1):
             setattr(self,f'conv{i}', GCNConv(hidden_channels, hidden_channels, cached=True))
 
-        if self.p:
-            self.drop = nn.Dropout(p = self.p)
+        if self.dp:
+            self.drop = nn.Dropout(p = self.dp)
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
@@ -40,7 +40,7 @@ class CovNet(BasicModule):
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
-            if self.p:
+            if self.dp:
                 x = self.drop(x)
         
         x = self.output(x, edge_index)
@@ -60,12 +60,12 @@ class ResamplingNet(BasicModule):
         num_class: int = 7,               # number of classes
         num_cov: int = 5,                 # number of convolution layer, at least 2
         act = nn.ReLU(),                  # activation function
-        p: float = None,                  # dropout rate
+        dp: float = None,                  # dropout rate
     ):
         super(ResamplingNet, self).__init__() 
 
         self.num_cov = num_cov
-        self.p = p
+        self.dp = dp
         self.act = act
 
         self.conv0 = GCNConv(num_feature, hidden_channels, cached=True)
@@ -73,8 +73,8 @@ class ResamplingNet(BasicModule):
         for i in range(1, self.num_cov - 1):
             setattr(self,f'conv{i}', GCNConv(hidden_channels, hidden_channels, cached=True))
 
-        if self.p:
-            self.drop = nn.Dropout(p = self.p)
+        if self.dp:
+            self.drop = nn.Dropout(p = self.dp)
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
@@ -85,7 +85,7 @@ class ResamplingNet(BasicModule):
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
-            if self.p:
+            if self.dp:
                 x = self.drop(x)
             edge_index = AdjacencySampling(self.prob)
         

@@ -27,15 +27,13 @@ def train(**kwargs):
         'hidden_channels':opt.num_hidden,
         'num_class':dataset.num_classes,
         'num_cov':opt.layer,
-        'p':opt.rate}
+        'dp':opt.rate}
     if opt.model == 'ResamplingNet':
         key['prop'] = torch.load(path + opt.data + 'prop.pt')
 
-
     for _ in range(opt.ite + 1):
 
-        model = getattr(models, opt.model)(**key)        
-        
+        model = getattr(models, opt.model)(**key)
         if opt.load_model_path:
             model.load(opt.load_model_path)
 
@@ -57,7 +55,6 @@ def train(**kwargs):
                 loss +=  opt.lamb*regularizer(model, opt.norm)
 
             loss.backward()
-
             optimizer.step()
 
             _, val_acc, tmp_test_acc = test(model, data)
