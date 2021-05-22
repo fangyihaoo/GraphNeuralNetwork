@@ -9,7 +9,6 @@ from utils import weight_init
 from utils import Optim
 from utils import regularizer
 from utils import KFAC
-from utils import setmodel
 from utils import write_excel
 from utils import NeighbourSmoothing
 
@@ -35,7 +34,7 @@ def train(**kwargs):
 
     for _ in range(opt.ite + 1):
 
-        model = setmodel(**key)            
+        model = getattr(models, opt.model)(**key)        
         
         if opt.load_model_path:
             model.load(opt.load_model_path)

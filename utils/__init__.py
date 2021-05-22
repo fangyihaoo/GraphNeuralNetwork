@@ -5,4 +5,3 @@ from .optim import Optim
 from .psgd import KFAC
 from .regularizer import regularizer
 from .writeExc import write_excel
-from .set_model import setmodel
