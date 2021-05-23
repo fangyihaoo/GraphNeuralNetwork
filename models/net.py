@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
 from .basic_module import BasicModule
+import os.path as osp
+import sys
+sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 from utils import AdjacencySampling
 from torch_geometric.nn import GCNConv
 from torch import Tensor

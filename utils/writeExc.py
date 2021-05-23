@@ -24,11 +24,11 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
         indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 6)]]
         df = pd.DataFrame(0, index = indexnames, columns = columnname)
-        df.loc[f'{layers} Layers', columnname] = f'{dat[0]} ({dat[1]})'
+        df.loc[f'{layers} Layers', columnname] = f'{dat[0]:.5f} ({dat[1]:.3f})'
         writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
         df.to_excel(writer, sheet_name = sheetname)
         writer.save()
-        writer.close()
+        # writer.close()
 
         return None
     
@@ -38,7 +38,7 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
     if sheetname not in excel.sheet_names:
         indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 6)]]
         df = pd.DataFrame(0, index = indexnames, columns = columnname)
-        df.loc[f'{layers} Layers', columnname] = f'{dat[0]} ({dat[1]})'
+        df.loc[f'{layers} Layers', columnname] = f'{dat[0]:.5f} ({dat[1]:.3f})'
         book = load_workbook(filepath)
         writer = pd.ExcelWriter(filepath, engine = 'openpyxl')
         writer.book = book
@@ -50,7 +50,7 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
     # updating sheet into this file.
     df = excel.parse(sheetname, index_col=0)
-    df.loc[f'{layers} Layers', columnname] = f'{dat[0]} ({dat[1]})'
+    df.loc[f'{layers} Layers', columnname] = f'{dat[0]:.5f} ({dat[1]:.3f})'
 
     book = load_workbook(filepath)
     writer = pd.ExcelWriter(filepath, engine = 'openpyxl')
@@ -64,8 +64,12 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
 
 if __name__ == '__main__':
+    import sys
     import os.path as osp
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
     from config import opt
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result', '')
+    opt.layer = 32
+    opt.data = 'PubMed'
     dat = (3.1,2.9)
     write_excel(dat,opt,path)

@@ -3,6 +3,8 @@ from torch import Tensor
 import os.path as osp
 from torch_geometric.utils import to_dense_adj, dense_to_sparse
 import torch_geometric.transforms as T
+import sys
+sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 from data import MyPlanetoid
 from typing import Tuple
 
@@ -86,12 +88,12 @@ def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
     '''
     edge = link_prob[0]
     weight = link_prob[1]
-    edge = edge[:,torch.rand(weight.shape[0]) < weight]
+    edge = edge[:,torch.rand(weight.shape[0], device = weight.device) < weight]
     return torch.cat((edge,torch.flip(edge, [0, ])),1).contiguous()
 
 
 
-## Dense matrix version
+# # Dense matrix version
 # def AdjacencySampling(P, sym = True):
 
 #     '''
@@ -112,27 +114,11 @@ def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
 #     return edge_index
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
-    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result', "")
+    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result', '')
     lst_names = ['Cora', 'CiteSeer', 'PubMed']
     for name in lst_names:
-        filename = path + f'{name}LinkProp.pt'
+        filename = path + f'{name}prop.pt'
         dataset = MyPlanetoid(name)
         data = dataset[0]
         P = NeighbourSmoothing(data)

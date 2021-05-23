@@ -1,5 +1,7 @@
 
-
+/result/*.pt
+/utils/*.o*
+/utils/*.job
 /data/CiteSeer/
 /data/Cora/
 /data/PubMed/

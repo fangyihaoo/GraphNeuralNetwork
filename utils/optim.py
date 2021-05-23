@@ -21,9 +21,8 @@ class Optim(object):
         elif self.method == 'adam':
             self.optimizer = optim.Adam(self.params, lr=self.lr)
         
-        # to use SGD, we need to modify the train part and dataset
-        # elif self.method == 'sgd':
-        #     return optim.SGD(self.params, lr = self.lr)
+        elif self.method == 'sgd':
+            return optim.SGD(self.params, lr = self.lr, momentum = config.momentum)
 
         else:
             raise RuntimeError("Invalid optim method: " + self.method)

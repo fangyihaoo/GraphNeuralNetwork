@@ -30,7 +30,6 @@ def train(**kwargs):
         'dp':opt.rate}
     if opt.model == 'ResamplingNet':
         prop = torch.load(path + opt.data + 'prop.pt', map_location = device)
-        prop = prop.to(device)
 
     for _ in range(opt.ite + 1):
 
@@ -65,8 +64,9 @@ def train(**kwargs):
 
             if opt.model == 'ResamplingNet':
                 edge = AdjacencySampling(prop)
-
-            _, val_acc, tmp_test_acc = test(model, data)
+                _, val_acc, tmp_test_acc = test(model, data, data['edge_index'], prop)
+            else:
+                _, val_acc, tmp_test_acc = test(model, data, data['edge_index'])
 
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
@@ -77,9 +77,12 @@ def train(**kwargs):
 
 
 @torch.no_grad()
-def test(model, data):
+def test(model, data, edge, prop = None):
     model.eval()
-    out = model(data.x, data.edge_index)
+    if model.__class__.__name__ == 'CovNet':
+        out = model(data.x, edge)
+    else:
+        out = model(data.x, edge, prop)
     pred = out.argmax(dim=1)
     accs = []
     for _, mask in data('train_mask', 'val_mask', 'test_mask'):

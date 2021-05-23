@@ -18,10 +18,16 @@ def regularizer(model, norm = 'row') -> Tensor:
         for name, param in model.named_parameters():
             if 'weight' in name:
                 loss += torch.sum(torch.norm(param, dim=0))
+
     elif norm == 'l2':
         for name, param in model.named_parameters():
             if 'weight' in name:
                 loss += torch.norm(param)
+
+    elif norm == 'all':
+        for _, param in model.named_parameters():
+            loss += torch.norm(param)
+            
     elif norm == 'l1':
         # l1_penalty = torch.nn.L1Loss(size_average=False)
         for name, param in model.named_parameters():
