@@ -61,3 +61,11 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
     writer.close()
 
     return None
+
+
+if __name__ == '__main__':
+    import os.path as osp
+    from config import opt
+    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result', '')
+    dat = (3.1,2.9)
+    write_excel(dat,opt,path)
