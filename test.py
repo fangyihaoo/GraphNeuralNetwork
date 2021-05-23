@@ -10,12 +10,12 @@ from utils import Optim
 from utils import regularizer
 from utils import KFAC
 from utils import write_excel
-from utils import NeighbourSmoothing
+from utils import AdjacencySampling
 
 def train(**kwargs):
 
     # setup
-    path = osp.join(osp.dirname(osp.realpath(__file__)), 'result/')
+    path = osp.join(osp.dirname(osp.realpath(__file__)), 'result', "")
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     opt._parse(kwargs)
     dataset = MyPlanetoid(name=opt.data, split=opt.split, transform=NormalizeFeatures())
@@ -29,7 +29,8 @@ def train(**kwargs):
         'num_cov':opt.layer,
         'dp':opt.rate}
     if opt.model == 'ResamplingNet':
-        key['prop'] = torch.load(path + opt.data + 'prop.pt')
+        prop = torch.load(path + opt.data + 'prop.pt', map_location = device)
+        prop = prop.to(device)
 
     for _ in range(opt.ite + 1):
 
@@ -44,18 +45,26 @@ def train(**kwargs):
         model.apply(weight_init)
         best_val_acc = 0.
         test_acc = 0.
+        edge = data['edge_index']
 
         for _ in range(opt.max_epoch + 1):
             model.train()
-            optimizer.zero_grad()  
-            out = model(data.x, data.edge_index)  
-            loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
+            optimizer.zero_grad()
 
+            if opt.model == 'ResamplingNet':
+                out = model(data.x, edge, prop)
+            else:
+                out = model(data.x, edge)
+
+            loss = criterion(out[data.train_mask], data.y[data.train_mask]) 
             if opt.lamb:
                 loss +=  opt.lamb*regularizer(model, opt.norm)
 
             loss.backward()
             optimizer.step()
+
+            if opt.model == 'ResamplingNet':
+                edge = AdjacencySampling(prop)
 
             _, val_acc, tmp_test_acc = test(model, data)
 

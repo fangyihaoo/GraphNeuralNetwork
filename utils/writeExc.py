@@ -1,9 +1,9 @@
 import pandas as pd
 import os.path as osp
 from openpyxl import load_workbook
+from typing import Tuple
 
-
-def write_excel(dat, opt, filepath) -> None:
+def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
     '''
     Save all the output from different schemes into one excel files with different sheets

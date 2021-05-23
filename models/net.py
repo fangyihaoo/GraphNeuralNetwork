@@ -54,7 +54,6 @@ class ResamplingNet(BasicModule):
     Each layer, the Laplacian matrix is resampling according to the graphon estimation
     '''
     def __init__(self,
-        prob: Tensor,                             # link probability matrix, cached
         num_feature: int = 16,            # number of features
         hidden_channels: int = 64,        # number of hidden channel
         num_class: int = 7,               # number of classes
@@ -78,16 +77,14 @@ class ResamplingNet(BasicModule):
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
-        self.prob = prob
-
-    def forward(self, x: Tensor, edge_index: Tensor) -> Tensor:  
+    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor) -> Tensor:  
         
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
             if self.dp:
                 x = self.drop(x)
-            edge_index = AdjacencySampling(self.prob)
+            edge_index = AdjacencySampling(link_prob)
         
         x = self.output(x, edge_index)
         return x
