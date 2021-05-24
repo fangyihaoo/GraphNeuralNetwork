@@ -11,6 +11,7 @@ from utils import regularizer
 from utils import KFAC
 from utils import write_excel
 from utils import AdjacencySampling
+from utils import eval
 
 def train(**kwargs):
 
@@ -28,7 +29,7 @@ def train(**kwargs):
         'num_class':dataset.num_classes,
         'num_cov':opt.layer,
         'dp':opt.rate}
-    if opt.model == 'ResamplingNet':
+    if opt.model == 'ResamplingNet' or opt.resampling == True:
         prop = torch.load(path + opt.data + 'prop.pt', map_location = device)
 
     for _ in range(opt.ite + 1):
@@ -62,35 +63,20 @@ def train(**kwargs):
             loss.backward()
             optimizer.step()
 
-            if opt.model == 'ResamplingNet':
+            if opt.model == 'ResamplingNet' or opt.resampling == True:
                 edge = AdjacencySampling(prop)
-                _, val_acc, tmp_test_acc = test(model, data, data['edge_index'], prop)
-            else:
-                _, val_acc, tmp_test_acc = test(model, data, data['edge_index'])
-
+            
+            _, val_acc, tmp_test_acc = eval(model, data)
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
                 test_acc = tmp_test_acc
 
         acc_meter.add(test_acc)
-    write_excel(acc_meter.value(), opt, path)
+    filename = path + 'output.xlsx'
+    write_excel(acc_meter.value(), opt, filename)
 
 
-@torch.no_grad()
-def test(model, data, edge, prop = None):
-    model.eval()
-    if model.__class__.__name__ == 'CovNet':
-        out = model(data.x, edge)
-    else:
-        out = model(data.x, edge, prop)
-    pred = out.argmax(dim=1)
-    accs = []
-    for _, mask in data('train_mask', 'val_mask', 'test_mask'):
-        correct = pred[mask] == data.y[mask]
-        acc = float(correct.sum()) / float(mask.sum())
-        accs.append(acc)
-    model.train()
-    return accs
+
 
 if __name__=='__main__':
     import fire

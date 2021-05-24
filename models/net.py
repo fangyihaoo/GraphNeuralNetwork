@@ -80,14 +80,14 @@ class ResamplingNet(BasicModule):
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
-    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor) -> Tensor:  
+    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor = None) -> Tensor:  
         
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
             if self.dp:
                 x = self.drop(x)
-            edge_index = AdjacencySampling(link_prob)
-        
+            if self.training:
+                edge_index = AdjacencySampling(link_prob)
         x = self.output(x, edge_index)
         return x

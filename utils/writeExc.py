@@ -8,16 +8,21 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
     '''
     Save all the output from different schemes into one excel files with different sheets
     '''
-    filepath = filepath + 'output.xlsx'
+
     sheetname = f'{opt.data}|{opt.split}'
     layers = opt.layer
 
     if opt.lamb:
-        columnname = [f'{opt.model} {opt.norm} Sparsity {opt.lamb}']
+        columnname = f'{opt.model} {opt.norm} Sparsity {opt.lamb}'
     elif opt.rate:
-        columnname = [f'{opt.model} Dropout Rate {opt.rate}']
+        columnname = f'{opt.model} Dropout Rate {opt.rate}'
     else:
-        columnname = [f'{opt.model}']
+        columnname = f'{opt.model}'
+    
+    if opt.resampling and opt.model != 'ResamplingNet':
+        columnname = [columnname + ' Resampling(not layer-wise)']
+    else:
+        columnname = [columnname]
 
     # Create a new excel file
     if not osp.exists(filepath): 

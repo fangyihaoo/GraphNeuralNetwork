@@ -45,6 +45,8 @@ class DefaultConfig(object):
 
     layer = 2
 
+    resampling = False
+
     rate = None # dropout rate
     
     lamb = None # lambda for regulation 
