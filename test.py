@@ -12,6 +12,7 @@ from utils import KFAC
 from utils import write_excel
 from utils import AdjacencySampling
 from utils import eval
+from utils import dropedge
 
 def train(**kwargs):
 
@@ -63,8 +64,12 @@ def train(**kwargs):
             loss.backward()
             optimizer.step()
 
-            if opt.model == 'ResamplingNet' or opt.resampling == True:
+            if opt.dropedge:
+                edge = dropedge(data['edge_index'], opt.dropedge)
+            elif opt.model == 'ResamplingNet' or opt.resampling == True:
                 edge = AdjacencySampling(prop)
+            else:
+                pass
             
             _, val_acc, tmp_test_acc = eval(model, data)
             if val_acc > best_val_acc:

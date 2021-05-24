@@ -47,6 +47,8 @@ class DefaultConfig(object):
 
     resampling = False
 
+    dropedge = None # drop edge rate
+
     rate = None # dropout rate
     
     lamb = None # lambda for regulation 

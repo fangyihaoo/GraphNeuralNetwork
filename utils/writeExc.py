@@ -21,6 +21,8 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
     
     if opt.resampling and opt.model != 'ResamplingNet':
         columnname = [columnname + ' Resampling(not layer-wise)']
+    elif opt.dropedge:
+        columnname = [columnname + f' DropEdge {opt.dropedge}']
     else:
         columnname = [columnname]
 
