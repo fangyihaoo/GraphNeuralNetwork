@@ -1,4 +1,5 @@
 
+/result/*.xlsx
 /result/*.pt
 /utils/*.o*
 /utils/*.job
