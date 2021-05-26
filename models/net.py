@@ -69,7 +69,7 @@ class GIN0WithJK(BasicModule):
         num_cov: int = 5,                                             # number of convolution layer, at least 2
         act: Callable[..., Tensor] = nn.ReLU(),                       # activation function
         dropout: float = 0.0,  
-        mode='max'):
+        mode='cat'):
 
         super(GIN0WithJK, self).__init__()
         self.act = act
