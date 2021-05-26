@@ -28,8 +28,8 @@ def train(**kwargs):
         'hidden_channels':opt.num_hidden,
         'num_class':dataset.num_classes,
         'num_cov':opt.layer,
-        'dp':opt.rate}
-    if opt.model == 'ResamplingNet' or opt.resampling == True:
+        'dropout':opt.dropout}
+    if opt.layerwise or opt.resampling:
         prop = torch.load(path + opt.data + 'prop.pt', map_location = device)
 
     for _ in range(opt.ite + 1):
@@ -51,7 +51,7 @@ def train(**kwargs):
             model.train()
             optimizer.zero_grad()
 
-            if opt.model == 'ResamplingNet':
+            if opt.layerwise:
                 out = model(data.x, edge, prop)
             else:
                 out = model(data.x, edge)
@@ -63,8 +63,10 @@ def train(**kwargs):
             loss.backward()
             optimizer.step()
 
-            if opt.model == 'ResamplingNet' or opt.resampling == True:
+            if opt.layerwise or opt.resampling :
                 edge = AdjacencySampling(prop)
+            elif opt.dropedge:
+                edge
             
             _, val_acc, tmp_test_acc = eval(model, data)
             if val_acc > best_val_acc:

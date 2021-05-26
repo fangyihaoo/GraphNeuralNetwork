@@ -45,9 +45,13 @@ class DefaultConfig(object):
 
     layer = 2
 
+    layerwise = False
+
     resampling = False
 
-    rate = None # dropout rate
+    dropedge = None
+
+    dropout = 0.0 # dropout rate
     
     lamb = None # lambda for regulation 
 

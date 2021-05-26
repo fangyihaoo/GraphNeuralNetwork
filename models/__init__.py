@@ -1,1 +1,1 @@
-from .net import CovNet, ResamplingNet
+from .net import CovNet, GIN0WithJK, GATNet

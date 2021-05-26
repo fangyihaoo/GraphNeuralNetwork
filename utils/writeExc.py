@@ -14,13 +14,15 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
     if opt.lamb:
         columnname = f'{opt.model} {opt.norm} Sparsity {opt.lamb}'
-    elif opt.rate:
-        columnname = f'{opt.model} Dropout Rate {opt.rate}'
+    elif opt.dropout!=0.0:
+        columnname = f'{opt.model} Dropout Rate {opt.dropout}'
     else:
         columnname = f'{opt.model}'
     
-    if opt.resampling and opt.model != 'ResamplingNet':
-        columnname = [columnname + ' Resampling(not layer-wise)']
+    if opt.resampling:
+        columnname = [columnname + ' Resampling']
+    elif opt.layerwise:
+        columnname = [columnname + ' Layerwise']
     else:
         columnname = [columnname]
 
