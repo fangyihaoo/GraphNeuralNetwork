@@ -81,7 +81,7 @@ class GIN0WithJK(BasicModule):
                 self.act,
                 nn.Linear(hidden_channels, hidden_channels),
                 self.act,
-                nn.BatchNorm1d(hidden_channels),
+                nn.BatchNorm1d(hidden_channels)
             ), train_eps=False)
         self.convs = torch.nn.ModuleList()
         for _ in range(num_cov - 1):
@@ -92,7 +92,7 @@ class GIN0WithJK(BasicModule):
                         self.act,
                         nn.Linear(hidden_channels, hidden_channels),
                         self.act,
-                        nn.BatchNorm1d(hidden_channels),
+                        nn.BatchNorm1d(hidden_channels)
                     ), train_eps=False))
         self.jump = JumpingKnowledge(mode)
         if mode == 'cat':
