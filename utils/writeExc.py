@@ -29,7 +29,7 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
     # Create a new excel file
     if not osp.exists(filepath): 
 
-        indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 6)]]
+        indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 7)]]
         df = pd.DataFrame(0, index = indexnames, columns = columnname)
         df.loc[f'{layers} Layers', columnname] = f'{dat[0]:.5f} ({dat[1]:.3f})'
         writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
@@ -43,7 +43,7 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
 
     # adding new sheet into this file
     if sheetname not in excel.sheet_names:
-        indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 6)]]
+        indexnames = [f'{x} Layers' for x in [2**i for i in range(1, 7)]]
         df = pd.DataFrame(0, index = indexnames, columns = columnname)
         df.loc[f'{layers} Layers', columnname] = f'{dat[0]:.5f} ({dat[1]:.3f})'
         book = load_workbook(filepath)

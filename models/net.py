@@ -58,6 +58,8 @@ class GIN0WithJK(BasicModule):
     Implimentation of 'Representation Learning on Graphs with Jumping Knowledge Networks'
 
     Node Classification Modified Version from https://github.com/rusty1s/pytorch_geometric/blob/master/benchmark/kernel/gin.py#L54-L106
+    mode (string): The aggregation scheme to use
+            (:obj:`"cat"`, :obj:`"max"` or :obj:`"lstm"`).
     '''
 
     def __init__(self, 
@@ -67,7 +69,7 @@ class GIN0WithJK(BasicModule):
         num_cov: int = 5,                                             # number of convolution layer, at least 2
         act: Callable[..., Tensor] = nn.ReLU(),                       # activation function
         dropout: float = 0.0,  
-        mode='cat'):
+        mode='max'):
 
         super(GIN0WithJK, self).__init__()
         self.act = act
