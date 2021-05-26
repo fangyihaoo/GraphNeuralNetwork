@@ -67,7 +67,9 @@ def train(**kwargs):
             if opt.layerwise or opt.resampling :
                 edge = AdjacencySampling(prop)
             elif opt.dropedge:
-                edge
+                edge = dropedge(edge, opt.dropedge)
+            else:
+                pass
             
             _, val_acc, tmp_test_acc = eval(model, data)
             if val_acc > best_val_acc:
