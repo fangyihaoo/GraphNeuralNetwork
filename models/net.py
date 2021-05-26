@@ -1,7 +1,8 @@
 import torch
+from torch._C import HOIST_CONV_PACKED_PARAMS
 import torch.nn as nn
 import os.path as osp
-from torch_geometric.nn import GCNConv, JumpingKnowledge, GINConv, GATConv
+from torch_geometric.nn import GCNConv, JumpingKnowledge, GINConv, GATConv, SAGEConv
 from .basic_module import BasicModule
 import sys
 sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
@@ -21,9 +22,9 @@ class CovNet(BasicModule):
         num_class: int = 7,                                      # number of classes
         num_cov: int = 5,                                        # number of convolution layer, at least 2
         act: Callable[..., Tensor] = nn.ReLU(),                  # activation function
-        dropout: float = 0.0,                  # dropout rate     
+        dropout: float = 0.0,                  # dropout rate
     ) -> None:
-        super(CovNet, self).__init__() 
+        super(CovNet, self).__init__()
 
         self.num_cov = num_cov
         self.drop = nn.Dropout(p = dropout)
@@ -36,8 +37,8 @@ class CovNet(BasicModule):
 
         self.output = GCNConv(hidden_channels, num_class, cached=True)
 
-    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor = None) -> Tensor:  
-        
+    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor = None) -> Tensor:
+
         for i in range(self.num_cov - 1):
             x = getattr(self, f'conv{i}')(x, edge_index)
             x = self.act(x)
@@ -62,13 +63,13 @@ class GIN0WithJK(BasicModule):
             (:obj:`"cat"`, :obj:`"max"` or :obj:`"lstm"`).
     '''
 
-    def __init__(self, 
+    def __init__(self,
         num_feature: int = 16,                                        # number of features
         hidden_channels: int = 64,                                    # number of hidden channel
         num_class: int = 7,                                           # number of classes
         num_cov: int = 5,                                             # number of convolution layer, at least 2
         act: Callable[..., Tensor] = nn.ReLU(),                       # activation function
-        dropout: float = 0.0,  
+        dropout: float = 0.0,
         mode='cat'):
 
         super(GIN0WithJK, self).__init__()
@@ -154,7 +155,7 @@ class GATNet(BasicModule):
             setattr(self,f'conv{i}', GATConv(hidden_channels, hidden_channels, heads = 1, dropout = dropout))
 
         # output layer
-        self.output = GATConv(hidden_channels, num_class, heads = 1, dropout = dropout)     
+        self.output = GATConv(hidden_channels, num_class, heads = 1, dropout = dropout)
 
     def forward(self,  x: Tensor, edge_index: Tensor, link_prob: Tensor = None) -> Tensor:
 
@@ -171,3 +172,44 @@ class GATNet(BasicModule):
     def __repr__(self):
         return self.__class__.__name__
 
+class GraphSage(BasicModule):
+
+    '''
+    GNNSage, replace GCNConv by SAGEConv,
+    from the “Inductive Representation Learning on Large Graphs” paper.
+    '''
+    def __init__(self,
+        num_feature: int = 16,                                   # number of features
+        hidden_channels: int = 64,                               # number of hidden channel
+        num_class: int = 7,                                      # number of classes
+        num_cov: int = 5,                                        # number of convolution layer, at least 2
+        act: Callable[..., Tensor] = nn.ReLU(),                  # activation function
+        dropout: float = 0.0,                  # dropout rate
+    ) -> None:
+        super(GraphSage, self).__init__()
+
+        self.num_cov = num_cov
+        self.drop = nn.Dropout(p = dropout)
+        self.act = act
+
+        self.conv0 = SAGEConv(num_feature, hidden_channels)
+
+        for i in range(1, self.num_cov - 1):
+            setattr(self,f'conv{i}', SAGEConv(hidden_channels, hidden_channels))
+
+        self.output = SAGEConv(hidden_channels,num_class)
+
+    def forward(self, x: Tensor, edge_index: Tensor, link_prob: Tensor = None) -> Tensor:
+
+        for i in range(self.num_cov - 1):
+            x = getattr(self, f'conv{i}')(x, edge_index)
+            x = self.act(x)
+            x = self.drop(x)
+            if link_prob:
+                if self.training:
+                    edge_index = AdjacencySampling(link_prob)
+        x = self.output(x, edge_index)
+        return x
+
+    def __repr__(self):
+        return self.__class__.__name__
