@@ -114,6 +114,38 @@ def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
 #     return edge_index
 
 
+
+
+def dropedge(edge_index: Tensor, droprate: float) -> Tensor:
+    '''
+    pytroch implementation of 'DROPEDGE: TOWARDS DEEP GRAPH CONVOLUTIONAL NETWORKS ON NODE CLASSIFICATION'
+
+    Args:
+        edge_index (N, M)
+    
+    Output:
+        edge_index with (N, (1-p)*M) 
+    '''
+
+    device = edge_index.device
+    edge = edge_index[:,edge_index[0] < edge_index[1]]
+    edge = edge[:,torch.randint(0, high = edge.shape[1], size = (int((1 - droprate)*edge.shape[1]),) , device= 'cuda')]
+    return torch.cat((edge, torch.flip(edge, [0, ])), 1).contiguous()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'result', '')
     lst_names = ['Cora', 'CiteSeer', 'PubMed']

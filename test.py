@@ -12,6 +12,7 @@ from utils import KFAC
 from utils import write_excel
 from utils import AdjacencySampling
 from utils import eval
+from utils import dropedge
 
 def train(**kwargs):
 
