@@ -129,7 +129,7 @@ def dropedge(edge_index: Tensor, droprate: float) -> Tensor:
 
     device = edge_index.device
     edge = edge_index[:,edge_index[0] < edge_index[1]]
-    edge = edge[:,torch.randint(0, high = edge.shape[1], size = (int((1 - droprate)*edge.shape[1]),) , device= 'cuda')]
+    edge = edge[:,torch.randint(0, high = edge.shape[1], size = (int((1 - droprate)*edge.shape[1]),) , device= device)]
     return torch.cat((edge, torch.flip(edge, [0, ])), 1).contiguous()
 
 
