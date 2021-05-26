@@ -140,7 +140,7 @@ class GATNet(BasicModule):
         act: Callable[..., Tensor] = nn.ReLU(),                       # activation function
         dropout: float = 0.0,                                         # dropout rate
     ):
-        super().__init__()
+        super(GATNet, self).__init__()
         self.num_cov = num_cov
         self.act = act
         self.drop = nn.Dropout(p = dropout)
