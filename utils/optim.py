@@ -1,4 +1,7 @@
 import torch.optim as optim
+from torch.optim.optimizer import Optimizer
+from torch import Tensor
+from typing import List
 
 class Optim(object):
     '''
@@ -24,5 +27,92 @@ class Optim(object):
         elif self.method == 'sgd':
             return optim.SGD(self.params, lr = self.lr, momentum = config.momentum)
 
+        elif self.method == 'sgnn':
+            return Sgnn(self.params, lr = self.lr)
+
         else:
             raise RuntimeError("Invalid optim method: " + self.method)
+
+
+
+
+class Sgnn(Optimizer):
+    r""" Implements Proximal descent on Clipped L1 norm
+
+    It is proposed in 'Nonconvex sparse regularization for deep neural networks and its optimality'
+
+    Args:
+        params (iterable): iterable of parameters to optimize or dicts defining
+            parameter groups
+        lr (float, optional): learning rate (default: 1e-3)
+        tau (float, optional): controls the scale of the parameters (default: 1)
+        lambda (float, optional): controls the importance of the regularization term (default: 1e-6)
+
+    """
+
+    def __init__(self, params, lr = 1e-3, tau = 1., lamb = 1e-6) -> None:
+        if not 0.0 <= lr:
+            raise ValueError("Invalid learning rate: {}".format(lr))
+        if not 0.0 <= tau:
+            raise ValueError("Invalid learning rate: {}".format(tau))
+        if not 0.0 <= lamb:
+            raise ValueError("Invalid learning rate: {}".format(lamb))
+        defaults = dict(lr = lr, tau = tau, lamb = lamb)
+        super(Sgnn, self).__init__(params, defaults)
+
+
+    @torch.no_grad()
+    def step(self, closure=None):
+        """Performs a single optimization step.
+        Args:
+            closure (callable, optional): A closure that reevaluates the model
+                and returns the loss.
+        """
+        loss = None
+        if closure is not None:
+            with torch.enable_grad():
+                loss = closure()
+
+        for group in self.param_groups:
+            params_with_grad = []
+            grads = []
+            tau = group['tau']
+            lamb = group['lamb']
+            lr = group['lr']
+
+            for p in group['params']:
+                if p.grad is not None:
+                    params_with_grad.append(p)
+                    grads.append(p.grad)
+
+                    state = self.state[p]
+
+            update(params_with_grad,
+                    grads,
+                    tau = tau,
+                    lamb = lamb,
+                    lr = lr)
+
+        return loss
+
+
+def update(params: List[Tensor],
+            grads: List[Tensor],
+            *,
+            tau: float,
+            lamb: float,
+            lr: float) -> None:
+    r"""
+    Functional API that performs update algorithm in equation (4.3) and (4.5) of
+    'Nonconvex sparse regularization for deep neural networks and its optimality'
+
+    """
+    for i, param in enumerate(params):
+        grad = grads[i]
+
+
+        h = torch.sign(param)*torch.gt(param, tau)                 # h
+        param.add_(lr*grad.add(-lamb*h/tau))                       
+        u = torch.clone(param).detach()                            # u
+
+        param.add_(- torch.sign(u)*lr*lamb/tau).mul_(torch.gt(torch.abs(u), lr*lamb/tau))
