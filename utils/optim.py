@@ -112,7 +112,7 @@ def update(params: List[Tensor],
         grad = grads[i]
 
 
-        h = torch.sign(param)*torch.gt(param, tau)                 # h
+        h = torch.sign(param)*torch.gt(torch.abs(param), tau)                 # h
         param.add_(lr*grad.add(-lamb*h/tau))                       
         u = torch.clone(param).detach()                            # u
 
