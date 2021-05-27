@@ -37,7 +37,7 @@ class Optim(object):
 
 
 
-class Sgnn(Optimizer):
+class Pgnn(Optimizer):
     r""" Implements Proximal descent on Clipped L1 norm
 
     It is proposed in 'Nonconvex sparse regularization for deep neural networks and its optimality'
@@ -85,8 +85,7 @@ class Sgnn(Optimizer):
                 if p.grad is not None:
                     params_with_grad.append(p)
                     grads.append(p.grad)
-
-                    state = self.state[p]
+                    self.state[p]
 
             update(params_with_grad,
                     grads,
@@ -110,9 +109,8 @@ def update(params: List[Tensor],
     """
     for i, param in enumerate(params):
         grad = grads[i]
-
         h = torch.sign(param)*torch.gt(torch.abs(param), tau)                 # h
         param.add_(-lr*grad.add(-lamb*h/tau))                       
-        u = torch.clone(param).detach()                            # u
+        u = torch.clone(param).detach()                                       # u
 
         param.add_(-torch.sign(u)*lr*lamb/tau).mul_(torch.gt(torch.abs(u), lr*lamb/tau))
