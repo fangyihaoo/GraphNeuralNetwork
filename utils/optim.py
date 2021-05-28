@@ -51,7 +51,7 @@ class Pgnn(Optimizer):
 
     """
 
-    def __init__(self, params, lr = 1e-3, tau = 1., lamb = 1e-6) -> None:
+    def __init__(self, params, lr = 1e-3, tau = 1e-3, lamb = 1e-5) -> None:
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= tau:
