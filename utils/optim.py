@@ -59,7 +59,7 @@ class Pgnn(Optimizer):
         if not 0.0 <= lamb:
             raise ValueError("Invalid learning rate: {}".format(lamb))
         defaults = dict(lr = lr, tau = tau, lamb = lamb)
-        super(Sgnn, self).__init__(params, defaults)
+        super(Pgnn, self).__init__(params, defaults)
 
 
     @torch.no_grad()
