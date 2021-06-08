@@ -10,69 +10,28 @@ def weight_init(m):
         model = Model()
         model.apply(weight_init)
     '''
+    gain = init.calculate_gain('relu')
+    # if isinstance(m, nn.Linear):
+    #     init.xavier_normal_(m.weight.data, gain=gain)
+    #     if m.bias is not None:
+    #         init.zeros_(m.bias)
 
+    # if isinstance(m, nn.Linear):
+    #     init.xavier_uniform_(m.weight.data, gain=gain)
+    #     if m.bias is not None:
+    #         init.zeros_(m.bias)
+
+
+    
     if isinstance(m, nn.Linear):
-        init.xavier_normal_(m.weight.data, gain=1.0)
+        init.kaiming_uniform_(m.weight.data, mode='fan_in', nonlinearity='relu')
         if m.bias is not None:
             init.zeros_(m.bias)
 
-    # if isinstance(m, nn.Conv1d):
-    #     init.normal_(m.weight.data)
+    # if isinstance(m, nn.Linear):
+    #     init.kaiming_normal_(m.weight.data, mode='fan_in', nonlinearity='relu')
     #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.Conv2d):
-    #     init.xavier_normal_(m.weight.data)
-    #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.Conv3d):
-    #     init.xavier_normal_(m.weight.data)
-    #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.ConvTranspose1d):
-    #     init.normal_(m.weight.data)
-    #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.ConvTranspose2d):
-    #     init.xavier_normal_(m.weight.data)
-    #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.ConvTranspose3d):
-    #     init.xavier_normal_(m.weight.data)
-    #     if m.bias is not None:
-    #         init.normal_(m.bias.data)
-    # elif isinstance(m, nn.BatchNorm1d):
-    #     init.normal_(m.weight.data, mean=1, std=0.02)
-    #     init.constant_(m.bias.data, 0)
-    # elif isinstance(m, nn.BatchNorm2d):
-    #     init.normal_(m.weight.data, mean=1, std=0.02)
-    #     init.constant_(m.bias.data, 0)
-    # elif isinstance(m, nn.BatchNorm3d):
-    #     init.normal_(m.weight.data, mean=1, std=0.02)
-    #     init.constant_(m.bias.data, 0)
-    # elif isinstance(m, nn.LSTM):
-    #     for param in m.parameters():
-    #         if len(param.shape) >= 2:
-    #             init.orthogonal_(param.data)
-    #         else:
-    #             init.normal_(param.data)
-    # elif isinstance(m, nn.LSTMCell):
-    #     for param in m.parameters():
-    #         if len(param.shape) >= 2:
-    #             init.orthogonal_(param.data)
-    #         else:
-    #             init.normal_(param.data)
-    # elif isinstance(m, nn.GRU):
-    #     for param in m.parameters():
-    #         if len(param.shape) >= 2:
-    #             init.orthogonal_(param.data)
-    #         else:
-    #             init.normal_(param.data)
-    # elif isinstance(m, nn.GRUCell):
-    #     for param in m.parameters():
-    #         if len(param.shape) >= 2:
-    #             init.orthogonal_(param.data)
-    #         else:
-    #             init.normal_(param.data)
+    #         init.zeros_(m.bias)
 
 
 if __name__ == '__main__':

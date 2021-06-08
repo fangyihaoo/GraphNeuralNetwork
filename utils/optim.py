@@ -26,10 +26,10 @@ class Optim(object):
             self.optimizer = optim.Adam(self.params, lr=self.lr)
         
         elif self.method == 'sgd':
-            return optim.SGD(self.params, lr = self.lr, momentum = config.momentum)
+            self.optimizer =  optim.SGD(self.params, lr = self.lr, momentum = config.momentum)
 
-        elif self.method == 'sgnn':
-            return Sgnn(self.params, lr = self.lr)
+        elif self.method == 'pgnn':
+            self.optimizer = Pgnn(self.params, lr = self.lr)
 
         else:
             raise RuntimeError("Invalid optim method: " + self.method)
@@ -43,15 +43,14 @@ class Pgnn(Optimizer):
     It is proposed in 'Nonconvex sparse regularization for deep neural networks and its optimality'
 
     Args:
-        params (iterable): iterable of parameters to optimize or dicts defining
-            parameter groups
+        params (iterable): iterable of parameters to optimize or dicts defining parameter groups
         lr (float, optional): learning rate (default: 1e-3)
-        tau (float, optional): controls the scale of the parameters (default: 1)
-        lambda (float, optional): controls the importance of the regularization term (default: 1e-6)
+        tau (float, optional): controls the scale of the parameters (default: 1e-3)
+        lambda (float, optional): controls the importance of the regularization term (default: 1e-5)
 
     """
 
-    def __init__(self, params, lr = 1e-3, tau = 1e-3, lamb = 1e-5) -> None:
+    def __init__(self, params, lr = 1e-3, tau = 1e-4, lamb = 1e-5) -> None:
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= tau:
@@ -64,7 +63,7 @@ class Pgnn(Optimizer):
 
     @torch.no_grad()
     def step(self, closure=None):
-        """Performs a single optimization step.
+        r"""Performs a single optimization step.
         Args:
             closure (callable, optional): A closure that reevaluates the model
                 and returns the loss.
@@ -86,7 +85,6 @@ class Pgnn(Optimizer):
                     params_with_grad.append(p)
                     grads.append(p.grad)
                     self.state[p]
-
             update(params_with_grad,
                     grads,
                     tau = tau,
@@ -109,8 +107,7 @@ def update(params: List[Tensor],
     """
     for i, param in enumerate(params):
         grad = grads[i]
-        h = torch.sign(param)*torch.gt(torch.abs(param), tau)                 # h
-        param.add_(-lr*grad.add(-lamb*h/tau))                       
-        u = torch.clone(param).detach()                                       # u
-
+        h = torch.sign(param.detach())*torch.gt(torch.abs(param.detach()), tau)              
+        param.add_(-lr*grad.add(-lamb*h/tau))
+        u = param.detach().clone()                                                  
         param.add_(-torch.sign(u)*lr*lamb/tau).mul_(torch.gt(torch.abs(u), lr*lamb/tau))

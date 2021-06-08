@@ -20,14 +20,14 @@ class DefaultConfig(object):
 
     num_hidden = 64
 
-    max_epoch = 1500 # number of epoch
+    max_epoch = 1000 # number of epoch
 
 
     #===============================================
     '''
     Preconditioner
     '''
-    eps = 0.01
+    eps = 0.001
 
     update_freq = 50
     

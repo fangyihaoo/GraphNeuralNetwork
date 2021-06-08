@@ -10,12 +10,13 @@ from typing import Tuple
 
 
 def NewNegihbour(dat) -> None:
-    '''
+    r"""
     Find the nearest neighbour according to the adjacency matrix (no edge information)
 
-    Input: Pytorch geometric data object,  C is constant. Default 3
+    Args: 
+        Pytorch geometric data object,  C is constant. Default 3
+    """
 
-    '''
     flag = False
     if 'edge_index' in dat.keys:
         adj = to_dense_adj(dat['edge_index'])[0]
@@ -44,17 +45,16 @@ def NewNegihbour(dat) -> None:
 
 
 def NeighbourSmoothing(dat): 
-
-    '''
+    r"""
     Python implementation of the algorithm proposed by Zhang, Y., Levina, E. and Zhu, J. (2016) 
     'Estimating neighborhood edge probabilities by neighborhood smoothing.' arXiv: 1509.08588. 
     
-    Input:
+    Args:
         Data object from the pytorch geometric containg 'edge_index' or 'adj_t'
     
     Output: 
         Tuple of edge_index and corresponding weight
-    '''
+    """
 
     if 'edge_index' in dat.keys:
         adj = to_dense_adj(dat['edge_index'])[0]
@@ -77,7 +77,7 @@ def NeighbourSmoothing(dat):
 
 
 def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
-    '''
+    r"""
     Generating the adjacency matrix according to link probability matrix
 
     Args:
@@ -85,7 +85,8 @@ def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
     
     Output:
         edge
-    '''
+    """
+
     edge = link_prob[0]
     weight = link_prob[1]
     edge = edge[:,torch.rand(weight.shape[0], device = weight.device) < weight]
@@ -117,15 +118,15 @@ def AdjacencySampling(link_prob: Tuple[Tensor, Tensor]) -> Tensor:
 
 
 def dropedge(edge_index: Tensor, droprate: float) -> Tensor:
-    '''
+    r"""
     pytroch implementation of 'DROPEDGE: TOWARDS DEEP GRAPH CONVOLUTIONAL NETWORKS ON NODE CLASSIFICATION'
 
     Args:
-        edge_index (N, M)
+        edge_index (2, M)
     
     Output:
-        edge_index with (N, (1-p)*M) 
-    '''
+        edge_index with (2, (1-p)*M) 
+    """
 
     device = edge_index.device
     edge = edge_index[:,edge_index[0] < edge_index[1]]

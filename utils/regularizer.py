@@ -1,16 +1,17 @@
 import torch
 from torch import Tensor
  
-def regularizer(model, norm = 'row') -> Tensor:
+def regularizer(model, norm: str = 'row') -> Tensor:
 
-    '''
+    r"""
     The regularization term in the loss function.
 
-    norm:
+    Args:
         'row': L2,1 norm of weight parameters(row sparsity)
         'l2': L2 norm of weight parameters
         'l1': L1 norm of weight parameters
-    '''
+        'all': L2 norm of all parameters(including bias)
+    """
     # loss = torch.tensor(0., device = next(model.parameters()).device)
     loss = 0
 

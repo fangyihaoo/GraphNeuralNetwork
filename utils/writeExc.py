@@ -23,6 +23,8 @@ def write_excel(dat: Tuple[float, float], opt, filepath) -> None:
         columnname = [columnname + ' Resampling']
     elif opt.layerwise:
         columnname = [columnname + ' Layerwise']
+    elif opt.dropedge:
+        columnname = [columnname + f' dropedge {opt.dropedge}']
     else:
         columnname = [columnname]
 
