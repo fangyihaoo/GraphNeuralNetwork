@@ -46,7 +46,7 @@ def train(**kwargs):
             model.load(opt.load_model_path)
         opti = Optim(model.parameters(), opt)
         optimizer = opti.optimizer
-        scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300,600], gamma=0.5)
+        scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 600], gamma=0.5)
         model.to(device)
         model.apply(weight_init)
         best_val_acc = 0.
