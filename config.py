@@ -39,7 +39,7 @@ class DefaultConfig(object):
 
     #===============================================
 
-    lr = 0.001 # initial learning rate
+    lr = 1e-3 # initial learning rate
 
     momentum = 0.9
 
